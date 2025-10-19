@@ -1,3 +1,5 @@
+import numpy as np
+
 from app.base.Point import Point
 from app.scan.ScanPoint import ScanPoint
 from app.scan.exporters.ScanExportersToTxt import ScanExportersToTxt
@@ -40,12 +42,15 @@ class Scan:
             self.add_point(s_point)
         return self
 
+    def get_points_array(self):
+        return np.array([[point.x, point.y, point.z] for point in self])
+
     def import_points_from_file(self, file_path, parser=ScanParserFactory):
         parser = parser(file_path)
         parser.parse(scan=self)
         return self
 
-    def export_points_from_file(self, file_path, parser=ScanExportersToTxt):
+    def export_points_to_file(self, file_path, parser=ScanExportersToTxt):
         parser = parser(file_path)
         parser.export(scan=self)
 
