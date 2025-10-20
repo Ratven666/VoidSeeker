@@ -4,28 +4,22 @@ import numpy as np
 import open3d as o3d
 from scipy.spatial import KDTree
 
+from app.mesh.mesh_trimmers.MeshTrimmerABC import MeshTrimmerABC
 
-class MeshTrimmers:
 
-    def __init__(self, base_mesh):
-        self.base_mesh = base_mesh
+class BorderMeshMeshTrimmer(MeshTrimmerABC):
 
-    def trim_by_border_mesh(self, border_mesh, scale=1.0, inplace=True, outside_only=True):
-        trimmed_mesh = self._trim_by_border_mesh(border_mesh, scale, outside_only)
-        if inplace:
-            self.base_mesh.mesh = trimmed_mesh
-        else:
-            mesh_copy = deepcopy(self.base_mesh)
-            mesh_copy.mesh = trimmed_mesh
-            return mesh_copy
-        return self.base_mesh
+    def __init__(self, base_mesh, border_mesh, scale=1.0):
+        super().__init__(base_mesh)
+        self.scale = scale
+        self.border_mesh = border_mesh
 
-    def _trim_by_border_mesh(self, border_mesh, scale, outside_only):
+    def _custom_trim_logic(self):
         """
         Обрезает mesh используя border_mesh mesh как эталон границ
         Симметричная обрезка - удаляются только треугольники, выходящие за пределы border_mesh
         """
-        border_mesh = border_mesh.mesh
+        border_mesh = self.border_mesh.mesh
         if len(border_mesh.triangles) == 0:
             return self.base_mesh.mesh
 
@@ -42,8 +36,8 @@ class MeshTrimmers:
 
         # Расширяем bbox для захвата всей геометрии border_mesh
         bbox_range = border_mesh_bbox_max - border_mesh_bbox_min
-        bbox_min = border_mesh_bbox_min - bbox_range * (scale - 1.0)
-        bbox_max = border_mesh_bbox_max + bbox_range * (scale - 1.0)
+        bbox_min = border_mesh_bbox_min - bbox_range * (self.scale - 1.0)
+        bbox_max = border_mesh_bbox_max + bbox_range * (self.scale - 1.0)
 
         # Метод 2: Определяем, какие точки находятся ВНУТРИ граничной поверхности
         # Используем ray casting для определения внутренних/внешних точек

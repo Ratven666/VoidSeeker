@@ -1,6 +1,5 @@
-from app.mesh.BallPivotingAlgorithmMeshOpen3D import BallPivotingAlgorithmMeshOpen3D
 from app.mesh.ConvexHullMeshOpen3D import ConvexHullMeshOpen3D
-from app.mesh.MeshTrimmers import MeshTrimmers
+from app.mesh.mesh_trimmers.BorderMeshMeshTrimmer import BorderMeshMeshTrimmer
 from app.mesh.PoissonMeshOpen3D import PoissonMeshOpen3D
 from app.scan.Scan import Scan
 
@@ -19,7 +18,7 @@ conv_hull_mesh.plot()
 
 # bpa_mesh = BallPivotingAlgorithmMeshOpen3D().init_mesh_from_scan(scan)
 
-tr_mesh = MeshTrimmers(poisson_mesh).trim_by_border_mesh(conv_hull_mesh, scale=1, outside_only=True)
+tr_mesh = BorderMeshMeshTrimmer(poisson_mesh, conv_hull_mesh, scale=1).trim_mesh()
 # tr_mesh = MeshTrimmers(poisson_mesh).trim_by_border_mesh(bpa_mesh, scale=1.2, outside_only=True)
 
 tr_mesh.plot()
