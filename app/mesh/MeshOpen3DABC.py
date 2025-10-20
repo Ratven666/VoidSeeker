@@ -7,7 +7,7 @@ from app.mesh.MeshABC import MeshABC
 from app.scan.Scan import Scan
 
 
-class MeshOpen3D(MeshABC):
+class MeshOpen3DABC(MeshABC):
 
     def __init__(self):
         self.scan = None

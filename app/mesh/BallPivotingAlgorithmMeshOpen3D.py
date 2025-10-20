@@ -1,10 +1,10 @@
 import numpy as np
 import open3d as o3d
 
-from app.mesh.MeshOpen3D import MeshOpen3D
+from app.mesh.MeshOpen3DABC import MeshOpen3DABC
 
 
-class BallPivotingAlgorithmMeshOpen3D(MeshOpen3D):
+class BallPivotingAlgorithmMeshOpen3D(MeshOpen3DABC):
 
     def __init__(self, radii=None):
         super().__init__()
