@@ -6,6 +6,7 @@ from app.scan.exporters.ScanExportersToTxt import ScanExportersToTxt
 from app.scan.parsers.ScanParserFactory import ScanParserFactory
 from app.scan.parsers.ScanParserFormTxt import ScanParserFormTxt
 from app.scan.plotters.ScanPlotterMPL import ScanPlotterMPL
+from app.scan.plotters.ScanPlotterPyVista import ScanPlotterPyVista
 
 
 class Scan:
@@ -67,7 +68,7 @@ class Scan:
         f_scan.borders = self._get_borders_dict(f_scan._points)
         return f_scan
 
-    def plot(self, *args, plotter=ScanPlotterMPL, **kwargs):
+    def plot(self, *args, plotter=ScanPlotterPyVista, **kwargs):
         plotter = plotter(*args, **kwargs)
         fig_ax = plotter.plot(scan=self)
         return fig_ax
@@ -108,13 +109,15 @@ class Scan:
 
 
 if __name__ == "__main__":
+    from app.scan.plotters.ScanPlotterPyVista import ScanPlotterPyVista
+
     scan = Scan("Scan1")
     print(scan)
     # scan.import_points_from_file(file_path=r"../../src/PCLD_1.txt")
     scan.import_points_from_file(file_path=r"../../src/PCLD_1.las")
     print(scan)
 
-    scan.plot()
+    scan.plot(plotter=ScanPlotterPyVista, point_size=8)
     for point in scan:
          print(point)
 

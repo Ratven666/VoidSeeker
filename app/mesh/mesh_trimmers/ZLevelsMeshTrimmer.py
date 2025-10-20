@@ -212,9 +212,8 @@ if __name__ == "__main__":
                              width=0,
                              scale=1.1).init_mesh_from_scan(scan)
     print(mesh)
-    mesh.plot()
+    # mesh.plot()
     z_level = scan.borders["z_max"]
     print(z_level)
-
     mesh = ZLevelsMeshTrimmer(base_mesh=mesh, z_level=z_level).trim_mesh()
     mesh.plot()

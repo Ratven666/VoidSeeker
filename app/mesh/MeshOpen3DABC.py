@@ -2,7 +2,6 @@ from abc import abstractmethod
 
 import open3d as o3d
 
-from CONFIG import DEFAULT_MESH_COLOR
 from app.mesh.MeshABC import MeshABC
 from app.scan.Scan import Scan
 
@@ -34,8 +33,8 @@ class MeshOpen3DABC(MeshABC):
     def _calculate_mesh(self):
         pass
 
-    def plot(self):
-        wireframe = o3d.geometry.LineSet.create_from_triangle_mesh(self.mesh)
-        wireframe.paint_uniform_color(DEFAULT_MESH_COLOR)
-        o3d.visualization.draw_geometries([self.pcd, wireframe],
-                                          mesh_show_wireframe=False)
+    # def plot(self):
+    #     wireframe = o3d.geometry.LineSet.create_from_triangle_mesh(self.mesh)
+    #     wireframe.paint_uniform_color(DEFAULT_MESH_COLOR)
+    #     o3d.visualization.draw_geometries([self.pcd, wireframe],
+    #                                       mesh_show_wireframe=False)

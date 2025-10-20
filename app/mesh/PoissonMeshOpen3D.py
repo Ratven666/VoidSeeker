@@ -32,10 +32,10 @@ if __name__ == "__main__":
     from app.scan.Scan import Scan
 
     scan = Scan(scan_name="TestScan")
-    scan.import_points_from_file(file_path="../../src/Камеры/data_3.dxf")
+    scan.import_points_from_file(file_path="../../src/Камеры/data_2.dxf")
 
     mesh = PoissonMeshOpen3D(depth=12,
                              width=0,
-                             scale=1.1).init_mesh_from_scan(scan)
+                             scale=1.5).init_mesh_from_scan(scan)
     print(mesh)
     mesh.plot()
