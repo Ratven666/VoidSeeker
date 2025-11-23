@@ -114,10 +114,10 @@ if __name__ == "__main__":
     scan = Scan("Scan1")
     print(scan)
     # scan.import_points_from_file(file_path=r"../../src/PCLD_1.txt")
-    scan.import_points_from_file(file_path=r"../../src/PCLD_1.las")
+    scan.import_points_from_file(file_path=r"../../src/Камеры/data_3.dxf")
     print(scan)
 
-    scan.plot(plotter=ScanPlotterPyVista, point_size=8)
-    for point in scan:
-         print(point)
+    # scan.plot(plotter=ScanPlotterPyVista, point_size=8)
+    # for point in scan:
+    #      print(point)
 

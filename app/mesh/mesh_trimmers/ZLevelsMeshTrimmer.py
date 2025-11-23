@@ -209,7 +209,7 @@ if __name__ == "__main__":
     scan.import_points_from_file(file_path="../../../src/Камеры/data_3.dxf")
 
     mesh = PoissonMeshOpen3D(depth=12,
-                             width=0,
+                             width=0.5,
                              scale=1.1).init_mesh_from_scan(scan)
     print(mesh)
     # mesh.plot()

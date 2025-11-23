@@ -32,9 +32,3 @@ class MeshOpen3DABC(MeshABC):
     @abstractmethod
     def _calculate_mesh(self):
         pass
-
-    # def plot(self):
-    #     wireframe = o3d.geometry.LineSet.create_from_triangle_mesh(self.mesh)
-    #     wireframe.paint_uniform_color(DEFAULT_MESH_COLOR)
-    #     o3d.visualization.draw_geometries([self.pcd, wireframe],
-    #                                       mesh_show_wireframe=False)
