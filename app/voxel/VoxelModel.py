@@ -30,14 +30,24 @@ class VoxelModel:
         self.voxels = self.refine_voxels(valid_voxels, self.voxel_side, refinement_factor)
 
     def _build_initial(self):
-        # Вычисляем число слоёв явно
-        nx = int(np.ceil((self.max_bound[0] - self.min_bound[0]) / self.start_side)) + 1
-        ny = int(np.ceil((self.max_bound[1] - self.min_bound[1]) / self.start_side)) + 1
-        nz = int(np.ceil((self.max_bound[2] - self.min_bound[2]) / self.start_side)) + 1
+        # Воксели строятся по координатной сетке, кратной размеру!
+        x0, y0, z0 = self.min_bound
+        x1, y1, z1 = self.max_bound
+        s = self.start_side
+        print(self.min_bound)
+        print(self.max_bound)
 
-        x_vals = np.linspace(self.min_bound[0], self.max_bound[0], nx)
-        y_vals = np.linspace(self.min_bound[1], self.max_bound[1], ny)
-        z_vals = np.linspace(self.min_bound[2], self.max_bound[2], nz)
+        # Округление до ближайшего целого кратного с обеих сторон
+        x_min = np.floor(x0 / s) * s
+        x_max = np.ceil(x1 / s) * s
+        y_min = np.floor(y0 / s) * s
+        y_max = np.ceil(y1 / s) * s
+        z_min = np.floor(z0 / s) * s
+        z_max = np.ceil(z1 / s) * s
+
+        x_vals = np.arange(x_min, x_max + s * 0.5, s)
+        y_vals = np.arange(y_min, y_max + s * 0.5, s)
+        z_vals = np.arange(z_min, z_max + s * 0.5, s)
 
         valid_voxels = []
         total = len(x_vals) * len(y_vals) * len(z_vals)
@@ -45,7 +55,9 @@ class VoxelModel:
             for x in x_vals:
                 for y in y_vals:
                     for z in z_vals:
-                        voxel = Voxel([x, y, z], self.start_side)
+                        voxel = Voxel([x, y, z], s)
+                        if voxel.min_corner[2] > self.max_bound[2]:
+                            continue
                         checker = VoxelPositionChecker(voxel, self.ray_tracer)
                         status = checker.voxel_status()
                         voxel.status = status
@@ -69,6 +81,8 @@ class VoxelModel:
                             for dz in np.arange(0, curr_side, new_side):
                                 small_corner = min_corner + np.array([dx, dy, dz])
                                 small_voxel = Voxel(small_corner, new_side)
+                                if small_voxel.min_corner[2] > self.max_bound[2]:
+                                    continue
                                 checker = VoxelPositionChecker(small_voxel, self.ray_tracer)
                                 status = checker.voxel_status()
                                 small_voxel.status = status
@@ -83,12 +97,26 @@ class VoxelModel:
     def get_voxels(self):
         return self.voxels
 
-    def plot(self, plotter=VoxelModelPlotter):
+    def plot(self, plotter=VoxelModelPyvistaPlotter):
         plotter = plotter(self)
         plotter.plot()
 
     def __len__(self):
         return len(self.voxels)
+
+    def __iter__(self):
+        return iter(self.voxels)
+
+    def __str__(self):
+        count_inside_voxels = 0
+        count_voxels_on_mesh = 0
+        for voxel in self:
+            if voxel.status == "inside":
+                count_inside_voxels += 1
+            elif voxel.status == "on_surface":
+                count_voxels_on_mesh += 1
+        return (f"{self.__class__.__name__} (Len: {len(self)}, "
+                f"Vxl_inside: {count_inside_voxels}, Vxl_on_surface: {count_voxels_on_mesh})")
 
 if __name__ == "__main__":
     from app.mesh.PoissonMeshOpen3D import PoissonMeshOpen3D
@@ -109,9 +137,11 @@ if __name__ == "__main__":
     mesh = ZLevelsMeshTrimmer(base_mesh=mesh, z_level=z_level).trim_mesh()
     # mesh.plot()
 
-    vm = VoxelModel(mesh, voxel_side=1, start_side=1, ray_tracer_class=DownwardRayTracer, refinement_factor=2)
+    vm = VoxelModel(mesh, voxel_side=0.25, start_side=1, ray_tracer_class=DownwardRayTracer, refinement_factor=2)
 
-    # for voxel in vm.get_voxels():
-    #     print(voxel)
+    for voxel in vm.get_voxels():
+        print(voxel)
+
+    print(vm)
 
     vm.plot(plotter=VoxelModelPyvistaPlotter)

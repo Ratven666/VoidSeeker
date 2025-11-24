@@ -39,4 +39,5 @@ class Voxel:
         return np.all((point > self.min_corner) & (point < self.max_corner))
 
     def __str__(self):
-        return f"{self.min_corner}_{self.max_corner}_{self.status}"
+        return (f"{self.__class__.__name__} (BasePoint: {self.min_corner}, "
+                f"Size: {self.size} Status: {self.status}")
