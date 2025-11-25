@@ -10,7 +10,7 @@ from app.voxel.VoxelModelPyvistaPlotter import VoxelModelPyvistaPlotter
 from app.voxel.VoxelPositionChecker import VoxelPositionChecker
 
 class VoxelModel:
-    def __init__(self, mesh, voxel_side, start_side, ray_tracer_class, refinement_factor=2):
+    def __init__(self, mesh, voxel_side, start_side, ray_tracer_class=DownwardRayTracer, refinement_factor=2):
         """
         mesh: Open3D TriangleMesh (или mesh.mesh, если оболочка)
         start_side: начальный крупный размер вокселя (грубая сетка)
@@ -34,9 +34,6 @@ class VoxelModel:
         x0, y0, z0 = self.min_bound
         x1, y1, z1 = self.max_bound
         s = self.start_side
-        print(self.min_bound)
-        print(self.max_bound)
-
         # Округление до ближайшего целого кратного с обеих сторон
         x_min = np.floor(x0 / s) * s
         x_max = np.ceil(x1 / s) * s
@@ -57,6 +54,7 @@ class VoxelModel:
                     for z in z_vals:
                         voxel = Voxel([x, y, z], s)
                         if voxel.min_corner[2] > self.max_bound[2]:
+                            pbar.update(1)
                             continue
                         checker = VoxelPositionChecker(voxel, self.ray_tracer)
                         status = checker.voxel_status()
@@ -82,6 +80,7 @@ class VoxelModel:
                                 small_corner = min_corner + np.array([dx, dy, dz])
                                 small_voxel = Voxel(small_corner, new_side)
                                 if small_voxel.min_corner[2] > self.max_bound[2]:
+                                    pbar.update(1)
                                     continue
                                 checker = VoxelPositionChecker(small_voxel, self.ray_tracer)
                                 status = checker.voxel_status()
@@ -139,7 +138,7 @@ if __name__ == "__main__":
 
     vm = VoxelModel(mesh, voxel_side=0.25, start_side=1, ray_tracer_class=DownwardRayTracer, refinement_factor=2)
 
-    for voxel in vm.get_voxels():
+    for voxel in vm:
         print(voxel)
 
     print(vm)
