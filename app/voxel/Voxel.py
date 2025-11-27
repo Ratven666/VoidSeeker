@@ -41,3 +41,17 @@ class Voxel:
     def __str__(self):
         return (f"{self.__class__.__name__} (BasePoint: {self.min_corner}, "
                 f"Size: {self.size} Status: {self.status}")
+
+    def __repr__(self):
+        return (f"VXL (BPoint: {self.min_corner}")
+
+    def __hash__(self):
+        return hash(self.min_corner.tobytes())
+
+    def __eq__(self, other):
+        if isinstance(other, Voxel):
+            return (np.array_equal(self.min_corner, other.min_corner) and
+                    self.size == other.size and
+                    self.status == other.status and
+                    self.status == other.status)
+        return False

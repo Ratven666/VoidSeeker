@@ -1,46 +1,22 @@
-import open3d as o3d
 import numpy as np
 
-from app.scan.Scan import Scan
-
-# Создание случайного облака точек
-scan = Scan(scan_name="TestScan")
-print(scan)
-scan.import_points_from_file(file_path="src/Камеры/data_3.dxf")
-print(scan)
-points = scan.get_points_array()
-
-pcd = o3d.geometry.PointCloud()
-pcd.points = o3d.utility.Vector3dVector(points)
+from app.voxel.Voxel import Voxel
 
 
 
+v1 = Voxel([1, 2, 3], 3)
+v2 = Voxel([1, 20, 3], 3)
+v3 = Voxel([1, 2, 30], 3)
+v4 = Voxel([1, 2, 3], 3)
 
-# ВЫЧИСЛЯЕМ НОРМАЛИ - это обязательно!
-pcd.estimate_normals()
+print(v1, hash(v1))
+print(v2, hash(v2))
+print(v3, hash(v3))
+print(v4, hash(v4))
 
-# ОРИЕНТИРУЕМ НОРМАЛИ - это важно для качества
-pcd.orient_normals_consistent_tangent_plane(10)
+print(v1 == v4)
+print(v1 == v2)
 
-# Теперь Poisson реконструкция должна работать
-mesh_poisson, densities = o3d.geometry.TriangleMesh.create_from_point_cloud_poisson(
-    pcd, depth=9
-)
+set_ = {v1, v2, v3, v4}
 
-# # Визуализируем
-# o3d.visualization.draw_geometries([mesh_poisson])
-
-
-def visualize_with_wireframe(mesh):
-    """Визуализация с wireframe поверхностью"""
-    mesh.compute_vertex_normals()
-
-    # Создаем копию меша для wireframe
-    wireframe = o3d.geometry.LineSet.create_from_triangle_mesh(mesh)
-    wireframe.paint_uniform_color([0, 0, 0])  # Черный цвет для каркаса
-
-    # Визуализация вместе
-    o3d.visualization.draw_geometries([pcd, wireframe],
-                                      mesh_show_wireframe=False)  # Отключаем встроенный wireframe
-
-visualize_with_wireframe(mesh_poisson)
+print(set_)
