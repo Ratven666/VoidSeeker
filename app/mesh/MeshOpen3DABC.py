@@ -1,8 +1,10 @@
 from abc import abstractmethod
 
 import open3d as o3d
+from ezdxf.entities import Mesh
 
 from app.mesh.MeshABC import MeshABC
+from app.mesh._MeshDxfLoader import MeshDxfLoader
 from app.scan.Scan import Scan
 
 
@@ -11,7 +13,7 @@ class MeshOpen3DABC(MeshABC):
     def __init__(self):
         self.scan = None
         self.pcd = None
-        self. mesh = None
+        self.mesh = None
 
     def init_mesh_from_scan(self, scan: Scan):
         self.scan = scan

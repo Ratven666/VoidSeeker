@@ -1,3 +1,5 @@
+from copy import copy
+
 import numpy as np
 from tqdm import tqdm
 
@@ -117,6 +119,21 @@ class VoxelModel:
         return (f"{self.__class__.__name__} (Len: {len(self)}, "
                 f"Vxl_inside: {count_inside_voxels}, Vxl_on_surface: {count_voxels_on_mesh})")
 
+    def get_difference_between_vm(self, voxel_model):
+        temp_vm_copy = copy(self)
+        base_voxels = {voxel: voxel.status for voxel in self.voxels}
+        result_voxels = []
+        for voxel in voxel_model:
+            if voxel in base_voxels:
+                if voxel.status != base_voxels[voxel]:
+                    voxel = copy(voxel)
+                    voxel.status = "on_surface"
+                else:
+                    continue
+            result_voxels.append(voxel)
+        temp_vm_copy.voxels = result_voxels
+        return temp_vm_copy
+
 if __name__ == "__main__":
     from app.mesh.PoissonMeshOpen3D import PoissonMeshOpen3D
     from app.mesh.mesh_trimmers.ZLevelsMeshTrimmer import ZLevelsMeshTrimmer
@@ -136,7 +153,7 @@ if __name__ == "__main__":
     mesh = ZLevelsMeshTrimmer(base_mesh=mesh, z_level=z_level).trim_mesh()
     # mesh.plot()
 
-    vm = VoxelModel(mesh, voxel_side=0.25, start_side=1, ray_tracer_class=DownwardRayTracer, refinement_factor=2)
+    vm = VoxelModel(mesh, voxel_side=1, start_side=2, ray_tracer_class=DownwardRayTracer, refinement_factor=2)
 
     for voxel in vm:
         print(voxel)
@@ -144,3 +161,4 @@ if __name__ == "__main__":
     print(vm)
 
     vm.plot(plotter=VoxelModelPyvistaPlotter)
+    print()

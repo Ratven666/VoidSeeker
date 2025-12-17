@@ -51,7 +51,5 @@ class Voxel:
     def __eq__(self, other):
         if isinstance(other, Voxel):
             return (np.array_equal(self.min_corner, other.min_corner) and
-                    self.size == other.size and
-                    self.status == other.status and
-                    self.status == other.status)
+                    self.size == other.size)
         return False
