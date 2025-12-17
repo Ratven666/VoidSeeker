@@ -117,7 +117,7 @@ if __name__ == "__main__":
     scan.import_points_from_file(file_path=r"../../src/Камеры/data_3.dxf")
     print(scan)
 
-    # scan.plot(plotter=ScanPlotterPyVista, point_size=8)
+    scan.plot(plotter=ScanPlotterPyVista, point_size=8)
     # for point in scan:
     #      print(point)
 
